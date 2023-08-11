@@ -7,9 +7,6 @@ test:
 .PHONY: setup
 setup: db-clean install migrate
 
-.PHONY: install
-install:
-	@poetry install
 
 .PHONY: db-clean
 db-clean:
@@ -29,3 +26,12 @@ lint:
 
 dev:
 	python manage.py runserver
+
+install: .env
+	@poetry install
+make-migration:
+	@$(MANAGE) makemigrations
+migrate: make-migration
+	@$(MANAGE) migrate
+
+build: install migrate

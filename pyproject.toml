@@ -8,7 +8,9 @@ packages = [{include = "task_manager"}]
 
 [tool.poetry.dependencies]
 python = "^3.10"
-
+python-dotenv = "^0.21.0"
+gunicorn = "^20.1.0"
+requests = "^2.28.2"
 
 [build-system]
 requires = ["poetry-core"]
