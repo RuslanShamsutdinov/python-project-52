@@ -1,19 +1,31 @@
-#include .env
-#
-#$(eval export $(shell sed -ne 's/ *#.*$$//; /./ s/=.*$$// p' .env))
+MANAGE := poetry run python manage.py
 
+.PHONY: test
+test:
+	@poetry run pytest
+
+.PHONY: setup
+setup: db-clean install migrate
+
+.PHONY: install
 install:
-	poetry install
-build:
-	poetry build
-publish:
-	poetry publish --dry-run
-package-install:
-	python3 -m pip install --user dist/*.whl
-check:
-	poetry run flake8 page_analyzer
+	@poetry install
+
+.PHONY: db-clean
+db-clean:
+	@rm db.sqlite3 || true
+
+.PHONY: migrate
+migrate:
+	@$(MANAGE) migrate
+
+.PHONY: shell
+shell:
+	@$(MANAGE) shell_plus --ipython
+
+.PHONY: lint
+lint:
+	@poetry run flake8 python_django_orm_blog
+
 dev:
-	poetry run flask --app page_analyzer:app --debug run
-PORT ?= 8000
-start:
-	gunicorn -w 5 -b 0.0.0.0:$(PORT) page_analyzer:app
+	python manage.py runserver
